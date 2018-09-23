@@ -148,6 +148,40 @@ public class ProxyManterDiario implements InterfaceManterDiario{
          }
         return result;
     }
+
+    @Override
+    public List<Diario> atualizarPagInicial(Long codUsuario) throws ExcecaoPersistencia, ExcecaoConexaoCliente {
+        manterDiario = new ArrayList();
+        manterDiario.add("Diario");
+        manterDiario.add("atualizarPagInicial");
+        manterDiario.add(codUsuario);
+        
+        List<Diario> result = null;
+        
+        try {
+            result = (List<Diario>) cliente.requisicao(manterDiario).get(0);
+        } catch (IOException | ClassNotFoundException ex) {
+             Logger.getLogger(ProxyManterDiario.class.getName()).log(Level.SEVERE, null, ex);
+         }
+        return result;
+    }
+
+    @Override
+    public List<Diario> pesquisarDiario(String textoBusca) throws ExcecaoPersistencia, ExcecaoConexaoCliente {
+        manterDiario = new ArrayList();
+        manterDiario.add("Diario");
+        manterDiario.add("pesquisarDiario");
+        manterDiario.add(textoBusca);
+        
+        List<Diario> result = null;
+        
+        try {
+            result = (List<Diario>) cliente.requisicao(manterDiario).get(0);
+        } catch (IOException | ClassNotFoundException ex) {
+             Logger.getLogger(ProxyManterDiario.class.getName()).log(Level.SEVERE, null, ex);
+         }
+        return result;
+    }
     
     
 }

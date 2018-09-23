@@ -5,40 +5,27 @@
  */
 package servidor;
 
-import adapter.Adapter;
-import comunicacao.EstabeleceComunicacao;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static servidor.Servidor.requisicao;
 import util.conversao.Conversao;
 import util.db.exception.ExcecaoConexaoCliente;
 import util.db.exception.ExcecaoNegocio;
 import util.db.exception.ExcecaoPersistencia;
-import util.pacote.DesmontagemPacote;
-import util.pacote.Pacote;
 
 /**
  *
- * @author Juliana Carvalho de Souza
+ * @author Juliana
  */
-/*
-    Esta classe é responsável por tratar os pacotes (datagramas) vindos do cliente
-    Recebe os pacotes e manda os dados para o adapter que é quem vai decidir o que criar
-    de acordo com os parametros do pacote
-
- */
-public class Servidor {
-
+public class TesteServidor {
     private static DatagramSocket servidorDatagramaSocket = null;
     private static final int PORTASERVIDOR = 2223;
     private static final int TAMANHO_MAXIMO_DATAGRAMA_UDP = 1000;
    
 
-    public static void main(String args[]) throws IOException, ClassNotFoundException, ExcecaoPersistencia, ExcecaoNegocio, ExcecaoConexaoCliente {
+    public static void omain(String args[]) throws IOException, ClassNotFoundException, ExcecaoPersistencia, ExcecaoNegocio, ExcecaoConexaoCliente {
 
         servidorDatagramaSocket = new DatagramSocket(PORTASERVIDOR);
         //Servidor eternamente ligado (enquanto a main estiver rodando)
@@ -46,7 +33,6 @@ public class Servidor {
             requisicao();
         }
     }
-
     public static void requisicao() throws IOException, ClassNotFoundException, ExcecaoPersistencia, ExcecaoConexaoCliente, ExcecaoNegocio {
 
         /*Preparando recebimento do pacote (datagrama)*/
@@ -70,29 +56,7 @@ public class Servidor {
         respostaSolicitacao = new DatagramPacket(respostaBytes, respostaBytes.length, enderecoIPCliente, portaCliente);
         servidorDatagramaSocket.send(respostaSolicitacao);
         
-        System.out.println("A comunicacao esta autorizada");
-        
-        EstabeleceComunicacao comunicacao;
-        comunicacao = new EstabeleceComunicacao(servidorDatagramaSocket, enderecoIPCliente, portaCliente );
-        
-        int numPacotesReceber = (int) conversor.byteParaObjeto(vetorBytesVindoCliente);
-        ArrayList<Pacote> pacotesVindosCliente = comunicacao.obtemRespostaPacotes(numPacotesReceber);
-        
-        DesmontagemPacote desmontaPacotes = new DesmontagemPacote();
-        
-        ArrayList arrayListDestinadoAdapter = desmontaPacotes.desmontaPacotes(pacotesVindosCliente);
-        
-        
-        //Passa o array para o adapter tratar
-        //Adapter deve tratar o pacote e enviar para o cliente
-        Adapter adapter = new Adapter(arrayListDestinadoAdapter,  enderecoIPCliente, portaCliente);
-        try {
-            adapter.tratarRequisicao();
-        } catch (ExcecaoNegocio | ExcecaoConexaoCliente ex) {
-            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        Thread adapterThread = new Thread(adapter);
-        //Adapter deve enviar para o cliente no metodo run
-        adapterThread.start();
     }
+    
+        
 }

@@ -24,4 +24,6 @@ public interface InterfaceManterDiario {
     public List<Diario> pesquisarPorCodUsuario(Long codUsuario) throws ExcecaoPersistencia,ExcecaoConexaoCliente;
     public List<Diario> pesquisarPorCodCidade(Long codCidade) throws ExcecaoPersistencia,ExcecaoConexaoCliente;
     public List<Diario> pesquisarPorCodEstado(Long codEstado) throws ExcecaoPersistencia,ExcecaoConexaoCliente;
+    public List<Diario> atualizarPagInicial(Long codUsuario) throws ExcecaoPersistencia,ExcecaoConexaoCliente;
+    public List<Diario> pesquisarDiario(String textoBusca) throws ExcecaoPersistencia, ExcecaoConexaoCliente;
 }

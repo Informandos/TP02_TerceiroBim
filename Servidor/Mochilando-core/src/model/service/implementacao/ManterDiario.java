@@ -10,6 +10,7 @@ import model.dao.implementacao.DiarioDAO;
 import model.dao.interfaces.InterfaceDiarioDAO;
 import model.domain.Diario;
 import model.service.interfaces.InterfaceManterDiario;
+import util.db.exception.ExcecaoConexaoCliente;
 import util.db.exception.ExcecaoNegocio;
 import util.db.exception.ExcecaoPersistencia;
 
@@ -109,6 +110,18 @@ public class ManterDiario implements InterfaceManterDiario {
     @Override
     public List<Diario> pesquisarPorCodEstado(Long codEstado) throws ExcecaoPersistencia {
         List<Diario> result = diarioDAO.listarPorCodCidade(codEstado);
+        return result;
+    }
+
+    @Override
+    public List<Diario> atualizarPagInicial(Long codUsuario) throws ExcecaoPersistencia, ExcecaoConexaoCliente {
+        List<Diario> result = diarioDAO.atualizarPaginaInicial(codUsuario);
+        return result;
+    }
+
+    @Override
+    public List<Diario> pesquisarDiario(String textoBusca) throws ExcecaoPersistencia, ExcecaoConexaoCliente {
+        List<Diario> result = diarioDAO.buscarDiario(textoBusca);
         return result;
     }
     

@@ -6,59 +6,38 @@
 package controller;
 
 import controller.interfacelogica.Logica;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import model.busca.implementacao.BuscarAtracao;
-import model.busca.implementacao.BuscarDiario;
-import model.busca.implementacao.BuscarUsuario;
 import model.domain.Atracao;
 import model.domain.Diario;
 import model.domain.Usuario;
+import model.service.interfaces.InterfaceManterDiario;
+import proxy.ProxyManterDiario;
 import util.db.exception.ExcecaoNegocio;
 import util.db.exception.ExcecaoPersistencia;
-
 
 /**
  *
  * @author Juliana
  */
-public class RealizarBusca implements Logica{
+public class RealizarBusca implements Logica {
 
     @Override
     public String execute(HttpServletRequest request) throws Exception {
-        String jsp = "";
+        String jsp;
 
         try {
-           
-           String textoBusca = request.getParameter("TextoBusca");
-            
-           BuscarAtracao buscarAtracao;
-           buscarAtracao = new BuscarAtracao();
-           List<Atracao> listaAtracao = buscarAtracao.buscaGeral(textoBusca);
-           
-           BuscarDiario buscarDiario;
-           buscarDiario = new BuscarDiario();
-           List<Diario> listaDiario = buscarDiario.buscaGeral(textoBusca);
-           
-           BuscarUsuario buscarUsuario;
-           buscarUsuario = new BuscarUsuario();
-           List<Usuario> listaUsuario = buscarUsuario.buscaGeral(textoBusca);
-           
-           
+            String textoBusca = request.getParameter("TextoBusca");
 
-            if (listaAtracao == null && listaDiario == null && listaUsuario == null) {
-               request.setAttribute("resultados", "nenhum");
-            } else {
-                
-                
-                
-                request.setAttribute("listaAtracao", listaAtracao);
-                request.setAttribute("listaDiario", listaDiario);
-                request.setAttribute("listaUsuario", listaUsuario);
-                
-                
-                jsp = "/ResultadosDaBusca.jsp";
-            }
+            InterfaceManterDiario manterDiario;
+            manterDiario = new ProxyManterDiario();
+
+            ArrayList<Diario> resultadoDiarios = (ArrayList<Diario>) manterDiario.pesquisarDiario(textoBusca);
+            request.setAttribute("DiariosResultPesquisa", resultadoDiarios);
+
+            //Saberemos se houve ou nao resultados encontrados na jsp
+            jsp = "/ResultadosDaBusca.jsp";
 
         } catch (ExcecaoPersistencia e) {
             request.setAttribute("excecao", e.getMessage());
@@ -66,5 +45,5 @@ public class RealizarBusca implements Logica{
         }
         return jsp;
     }
-    
+
 }

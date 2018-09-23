@@ -25,4 +25,6 @@ public interface InterfaceDiarioDAO {
     public List<Diario> listarPorCodUsuario(Long codUsuario) throws ExcecaoPersistencia;
     public List<Diario> listarPorCodCidade(Long codCidade) throws ExcecaoPersistencia;
     public List<Diario> listarPorCodEstado(Long codEstado) throws ExcecaoPersistencia;
+    public List<Diario> atualizarPaginaInicial(Long codUsuario)throws ExcecaoPersistencia;
+    public List<Diario> buscarDiario(String textoBusca) throws ExcecaoPersistencia;
 }

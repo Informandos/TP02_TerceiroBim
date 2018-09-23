@@ -8,7 +8,6 @@ package controller;
 import controller.interfacelogica.Logica;
 import javax.servlet.http.HttpServletRequest;
 import model.domain.Diario;
-import model.service.implementacao.ManterDiario;
 import model.service.interfaces.InterfaceManterDiario;
 import proxy.ProxyManterDiario;
 

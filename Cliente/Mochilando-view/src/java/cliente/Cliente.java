@@ -35,7 +35,7 @@ public class Cliente {
 
     private final DatagramSocket clienteDatagramaSocket;
     private final String nomServidorStr = "localhost";
-    private final int PORTA = 2233;
+    private final int PORTA = 2223;
     private final InetAddress enderecoIP;
     private final int TAMANHO_MAXIMO_DATAGRAMA_UDP = 1500;
     private final int TAMANHO_MAXIMO_CONTEUDO_BYTE = 1000;
@@ -94,6 +94,7 @@ public class Cliente {
         numPacotesEnviar = arrayPacotes.size();
         
         boolean comunicAutorizada = comunicacao.enviaSolicitacaoComunicacao( numPacotesEnviar);
+        
         if (comunicAutorizada) {
             
             for (Pacote pacote : arrayPacotes) {

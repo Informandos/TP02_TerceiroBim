@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.busca.implementacao.BuscarDiario;
 import model.dao.interfaces.InterfaceDiarioDAO;
 import model.dao.interfaces.InterfaceUsuarioDAO;
 import model.domain.Cidade;
@@ -51,7 +52,6 @@ public class DiarioDAO implements InterfaceDiarioDAO {
             pstmt.setDate(5, new java.sql.Date(diario.getDatFimViagem().getTime()));
             pstmt.setString(6, diario.getTxtDiario());
             pstmt.setString(7, diario.getTipoDiario());
-
 
             ResultSet rs = pstmt.executeQuery();
 
@@ -354,6 +354,64 @@ public class DiarioDAO implements InterfaceDiarioDAO {
             throw new ExcecaoPersistencia(e.getMessage(), e);
 
         }
+    }
+
+    @Override
+    public List<Diario> atualizarPaginaInicial(Long codUsuario) throws ExcecaoPersistencia {
+        //obtem os diarios mais recentes que tem tags seguidas pelo usuaro
+        try {
+            Connection connection = ConnectionManager.getInstance().getConnection();
+
+            String sql = "SELECT A.cod_diario FROM"
+                    + " diario A JOIN tag_diario B ON A.cod_diario = B.cod_diario "
+                    + "JOIN usuario_tag C ON B.cod_tag = C.cod_tag "
+                    + "WHERE C.cod_usuario = ? "
+                    + "GROUP BY 1, A.dat_publicacao ORDER BY A.dat_publicacao";
+
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+
+            pstmt.setLong(1, codUsuario);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            ArrayList<Diario> listarTudo = null;
+            InterfaceUsuarioDAO UsuarioDAO = new UsuarioDAO();
+            if (rs.next()) {
+                listarTudo = new ArrayList<>();
+                do {
+                    Diario diario = new Diario();
+                    diario.setCodDiario(rs.getLong("cod_diario"));
+                    Usuario usuario = UsuarioDAO.consultarPorId(rs.getLong("cod_usuario"));
+                    diario.setUsuario(usuario);
+                    diario.setNomDiario(rs.getString("nom_diario"));
+                    diario.setDatPublicacao(rs.getDate("dat_publicacao"));
+                    diario.setDatInicioViagem(rs.getDate("dat_inicio_viagem"));
+                    diario.setDatFimViagem(rs.getDate("dat_fim_viagem"));
+                    diario.setTxtDiario(rs.getString("txt_diario"));
+
+                    listarTudo.add(diario);
+                } while (rs.next());
+
+            }
+
+            rs.close();
+            pstmt.close();
+            connection.close();
+
+            return listarTudo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExcecaoPersistencia(e.getMessage(), e);
+        }
+
+    }
+
+    @Override
+    public List<Diario> buscarDiario(String textoBusca) throws ExcecaoPersistencia {
+       List<Diario> diariosPesquisa = new ArrayList();
+       BuscarDiario buscarDiario = new BuscarDiario();
+       diariosPesquisa = buscarDiario.buscaGeral(textoBusca);
+       return diariosPesquisa;
     }
 
 }

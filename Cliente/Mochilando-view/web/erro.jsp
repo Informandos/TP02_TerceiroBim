@@ -8,7 +8,7 @@ String erro = "";
 %>
 <%
 erro = (String)request.getAttribute("erro");
-String excessao = (String) request.getAttribute("excecao");
+//String excessao = (String) request.getAttribute("excecao");
 %>
 
 <html>
@@ -18,7 +18,7 @@ String excessao = (String) request.getAttribute("excecao");
     </head>
     <body>
         <h1>Pagina de erro</h1>
-        <%=excessao%>
+        <%//=excessao%>
         <h2><%=erro%></h2>
     </body>
 </html>

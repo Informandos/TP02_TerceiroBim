@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.domain.Tag;
 import model.domain.UsuarioTag;
-import model.service.implementacao.ManterUsuarioTag;
 import model.service.interfaces.InterfaceManterTag;
 import proxy.ProxyManterUsuarioTag;
 

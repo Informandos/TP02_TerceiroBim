@@ -762,6 +762,18 @@ public class Adapter implements Runnable {
                     if (resposta == null) {
                         resposta.add(result);
                     }
+                }else if (operacao.equals("atualizarPagInicial")) {
+                   Long codUsuario = (Long) requisicao.get(2);
+                   List<Diario> result = manterDiario.atualizarPagInicial(codUsuario);
+                    if (resposta == null) {
+                        resposta.add(result);
+                    }
+                }else if (operacao.equals("pesquisarDiario")) {
+                   String textoBusca = (String) requisicao.get(2);
+                   List<Diario> result = manterDiario.pesquisarDiario(textoBusca);
+                    if (resposta == null) {
+                        resposta.add(result);
+                    }
                 }
                 break;
                 
