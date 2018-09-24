@@ -183,7 +183,9 @@ public class Adapter implements Runnable {
 
                 } else if (operacao.equals("getUserLogin")) {
                     String email = (String) requisicao.get(2);
+                    System.out.println("Email recebido: "+email);
                     String senha = (String) requisicao.get(3);
+                    System.out.println("Senha recebida: "+senha);
                     Usuario result = manterUsuario.getUserLogin(email, senha);
                     if (resposta == null) {
                         resposta.add(result);

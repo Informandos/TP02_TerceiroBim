@@ -43,11 +43,12 @@ public class Conversao {
         ObjectInputStream ois;
         Object arrayConvertido;
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        System.out.println("bytes"+Arrays.toString(bytes));
+        System.out.println("bytes obtidos"+Arrays.toString(bytes));
         ois = new ObjectInputStream(bais);
         arrayConvertido = (Object) ois.readObject();
 
         ois.close();
+        bais.close();
         return arrayConvertido;
     }
 }

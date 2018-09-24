@@ -28,7 +28,7 @@ public class Logar {
 
             if (usr == null) {
                 System.out.println("Usuario nao encontrado");
-                String erro = "Usuario nao encontrado!";
+                String erro = "Usuario nao encontrado!\nEmail:"+email+"senha:"+senha;
                 request.setAttribute("erro", erro);
                 jsp = "/erro.jsp";
             } else {

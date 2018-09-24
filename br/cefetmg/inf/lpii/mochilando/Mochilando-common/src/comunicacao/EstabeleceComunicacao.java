@@ -10,6 +10,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import util.conversao.Conversao;
 import util.pacote.Pacote;
 
@@ -41,7 +42,11 @@ public class EstabeleceComunicacao implements InterfaceEstabeleceComunicacao {
         //Vetor que armazenara a resposta do servidor
         byte[] vetorBytesEntrada = new byte[1500];
         //Passa o numero de pacotes para o servidor, para ele saber quantos serao recebidos
-        byte[] cabecalhoBytes = conversor.objetoParaByte(numPacotesEnviar);
+        ArrayList numPctArrayList = new ArrayList();
+        numPctArrayList.add(numPacotesEnviar);
+        byte[] cabecalhoBytes = conversor.objetoParaByte(numPctArrayList);
+        System.out.println("Bytes do numero de pacotes (dentro do arraylist)");
+        System.out.println(Arrays.toString(cabecalhoBytes));
         DatagramPacket primeiroPacote;
         primeiroPacote = new DatagramPacket(cabecalhoBytes, cabecalhoBytes.length, enderecoIP, PORTA);
         datagramaSocket.send(primeiroPacote);
@@ -50,8 +55,11 @@ public class EstabeleceComunicacao implements InterfaceEstabeleceComunicacao {
         DatagramPacket datagramaReceber = new DatagramPacket(vetorBytesEntrada, vetorBytesEntrada.length);
         datagramaSocket.receive(datagramaReceber);
 
+        //Pegando o arrayList da resposta:
+        ArrayList respostaServidor = new ArrayList();
+        respostaServidor = (ArrayList) conversor.byteParaObjeto(vetorBytesEntrada);
         //Transformando byte para object(String)
-        resposta = (boolean) conversor.byteParaObjeto(vetorBytesEntrada);
+        resposta = (boolean) respostaServidor.get(0);
 
         return resposta;
     }
@@ -67,7 +75,9 @@ public class EstabeleceComunicacao implements InterfaceEstabeleceComunicacao {
 
         
         boolean resposta = true;
-        byte[] respostaBytes = conversor.objetoParaByte(resposta);
+        ArrayList arrayResposta = new ArrayList();
+        arrayResposta.add(resposta);
+        byte[] respostaBytes = conversor.objetoParaByte(arrayResposta);
         //enviando resposta de que pode mandar para o servidor
         DatagramPacket respostaSolicitacao;
         respostaSolicitacao = new DatagramPacket(respostaBytes, respostaBytes.length, enderecoIP, PORTA);
@@ -97,12 +107,16 @@ public class EstabeleceComunicacao implements InterfaceEstabeleceComunicacao {
 
         //Obtem todos os pacotes em um arraylist
         byte[] bytesPacoteResposta = new byte[TAMANHO_MAXIMO_DATAGRAMA_UDP];
-        ArrayList<Pacote> arrayPacotesRecebido = null;
+        ArrayList<Pacote> arrayPacotesRecebido = new ArrayList();
+        System.out.println("\nvetor de bytes: "+Arrays.toString(bytesPacoteResposta));
 
         for (int aux = 0; aux < numPacotesReceber; aux++) {
 
             DatagramPacket datagramaReceberResposta = new DatagramPacket(bytesPacoteResposta, bytesPacoteResposta.length);
             datagramaSocket.receive(datagramaReceberResposta);
+            System.out.println("\nvetor de bytes apos receber datagrama:\n tamanho: "+bytesPacoteResposta.length);
+            System.out.println(Arrays.toString(bytesPacoteResposta));
+
             Pacote pacoteRecebido = (Pacote) conversor.byteParaObjeto(bytesPacoteResposta);
             arrayPacotesRecebido.add(pacoteRecebido);
         }

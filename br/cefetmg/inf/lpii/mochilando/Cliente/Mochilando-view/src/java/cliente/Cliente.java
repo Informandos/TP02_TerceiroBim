@@ -18,6 +18,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.conversao.Conversao;
@@ -50,11 +52,10 @@ public class Cliente {
     private ArrayList arrayListVindoProxy = null;
     //ArrayList a ser devolvida para o proxy
     private ArrayList arrayListDestinadoProxy = null;
-    
+
     private final MontagemPacote montaPacotes;
     private final DesmontagemPacote desmontaPacotes;
     private final EstabeleceComunicacao comunicacao;
-    
 
     private Cliente() throws SocketException, UnknownHostException {
         clienteDatagramaSocket = new DatagramSocket();
@@ -89,16 +90,33 @@ public class Cliente {
         this.arrayListVindoProxy = arrayListVindo;
 
         //1000 bytes para conteudo, 300 para identificacao e 200 extras para o objeto Pacote
-        
         ArrayList<Pacote> arrayPacotes = montaPacotes.montaPacotes(arrayListVindoProxy);
+        ArrayList ds = desmontaPacotes.desmontaPacotes(arrayPacotes);
+        System.out.println("DS: (desmontagem do queq chegou), CLiente");
+        System.out.println(ds.get(0).toString());
+        System.out.println(ds.get(1).toString());
+        byte[] asss = arrayPacotes.get(0).getConteudo();
+        System.out.print("Pacotes: array "+Arrays.toString(asss));
+        
         numPacotesEnviar = arrayPacotes.size();
+
+        boolean comunicAutorizada = false;
         
-        boolean comunicAutorizada = comunicacao.enviaSolicitacaoComunicacao( numPacotesEnviar);
-        
+        comunicAutorizada = comunicacao.enviaSolicitacaoComunicacao(numPacotesEnviar);
+        System.out.println("Resposta obtida"+comunicAutorizada);
         if (comunicAutorizada) {
-            
+            System.out.println("\ntop");
             for (Pacote pacote : arrayPacotes) {
-                comunicacao.enviaPacote(pacote);
+                System.out.println("\nok aq no cliente");
+                //Converte pacote em byte
+                byte[] bytesPacote;
+                bytesPacote = conversor.objetoParaByte(pacote);
+                System.out.println("\nodio");
+                System.out.println("\nBytes do pacte:\n"+Arrays.toString(bytesPacote));
+                //envia pacote
+                DatagramPacket datagramaEnviar;
+                datagramaEnviar = new DatagramPacket(bytesPacote, bytesPacote.length, enderecoIP, PORTA);
+                clienteDatagramaSocket.send(datagramaEnviar);
             }
             //Depois de enviar os pacotes, pega a resposta
             //O servidor deve primeiro enviar uma permissao para o cliente para 
@@ -108,8 +126,7 @@ public class Cliente {
             ArrayList<Pacote> pacotes = comunicacao.obtemRespostaPacotes(numPacotesSolicitados);
             //Pega todos os pacotes enviados e monta array list
             this.arrayListDestinadoProxy = desmontaPacotes.desmontaPacotes(pacotes);
-        }
-        else{
+        } else {
             throw new ExcecaoConexaoCliente("A conexao não foi autorizada");
         }
         return arrayListDestinadoProxy;

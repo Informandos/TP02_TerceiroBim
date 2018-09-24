@@ -125,9 +125,10 @@ public class ProxyManterUsuario implements InterfaceManterUsuario {
         manterUsuario.add(email);
         manterUsuario.add(senha);
 
-        Usuario result = null;
+        Usuario result = new Usuario();
         try {
-            result = (Usuario) cliente.requisicao(manterUsuario).get(0);
+            ArrayList resposta = cliente.requisicao(manterUsuario);
+            result = (Usuario) resposta.get(0);
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(ProxyManterUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
